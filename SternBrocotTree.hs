@@ -26,6 +26,8 @@ numbers as the simplified fraction 1/2.
 
 module SternBrocotTree where
 
+import Data.Fixed (mod')
+
 data Tree = Empty
           | Node { numer   :: Int
                  , denom   :: Int
@@ -65,8 +67,9 @@ toDbl Empty = undefined
 toDbl node  = fromIntegral (numer node) / fromIntegral (denom node)
 
 approx :: Double -> Int -> (Int, Int)
-approx f depth = (numer node, denom node)
-    where node = approx' root root f depth
+approx f depth = (units + numer node, denom node)
+    where node  = approx' root root (mod' f 1.0) depth
+          units = denom node * floor f
 
 -- TODO: make more pretty.
 -- UPDATE: made  prettier, but then  I added more  special cases.
